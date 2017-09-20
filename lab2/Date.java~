@@ -1,0 +1,16 @@
+;; This buffer is for notes you don't want to save, and for Lisp evaluation.
+;; If you want to create a file, visit that file with C-x C-f,
+;; then enter the text in that file's own buffer.
+
+import java.util.GregorianCalender;
+import java.util.Date;
+public class Date {
+    public static void main(String[] args) {
+	GregorianCalender myCalender = new GregorianCalender(1995,1,20);
+        Date myDate = new Date();
+        myDate = myCalender.getTime();
+ 
+	System.out.println(myDate);
+
+    }
+}

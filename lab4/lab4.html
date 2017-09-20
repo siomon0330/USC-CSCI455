@@ -1,0 +1,423 @@
+<html>
+<head>
+<title>
+Lab 4 CS 455
+</title
+</head>
+<body bgcolor="#FFFFFF">
+
+<center>
+
+<h2> CS 455 Lab 4: Array Lists</h2>
+</center>
+
+<p align=right>
+Spring 2017 [Bono]<BR>
+</p>
+
+<hr>
+<h3> Goals and Background </h3>
+
+In this lab you're going to get practice programming with array lists
+by implementing a class that encapsulates one and that has a few
+methods to examine and manipulate it.  The resulting class isn't that
+useful as is, but part of the point of this lab is to also practice
+implementing classes: we want you to get used to putting such data
+structures inside of classes, since that's how we normally organize
+object-oriented programs (as opposed to an array or array list that's
+a local variable of main, and gets passed as an explicit parameter to
+other static functions of the main class).  You will also get practice
+with incremental development and testing.
+<p>
+Note: in this lab where we say implement so-and-so method, it means to
+implement it so its functionality matches the method comment already
+written for it (i.e., you will have to read the method comment to know
+exactly what the method is supposed to do).
+<p>
+<p>
+Remember to switch roles with your partner from what you were last
+time.  For more information on lab partnerships, see <a
+href="../lab2/lab2.html">Lab 2</a>.
+<p>
+<h3>Reading and reference material</h3> 
+<ul> 
+<li> Horstmann, Sections 7.1.4, 7.3, 7.7 on arrays and array lists
+
+<li> Horstmann, Section 5.6 on test cases
+
+<li> Horstmann, Section Special Topic 4.3 on static methods; also see <a href="#static">below</a>
+
+<li> Horstmann, Appendix D: The Java Library.
+<br>
+  An
+easier-to-understand, abbreviated version of Java API Documentation.
+This lab uses: <kbd>java.util.ArrayList</kbd>, <kbd>java.util.Scanner</kbd>, and <kbd>java.lang.Integer</kbd>,
+</ul>
+
+<p>
+
+
+<H3>Exercise 1 (1 checkoff point)</H3>
+
+<strong>Step 1.</strong> First, create your <kbd>lab4</kbd> directory
+and <kbd>cd</kbd> into it.  Copy the lab files into your account using
+the following command:
+
+<pre>
+cp ~csci455/labs/lab4/* .
+</pre>
+
+(It also copies this <kbd>html</kbd> lab description.  You can delete
+that one if you want.)
+<p>
+The class that encapsulates our array list is called <kbd>Nums</kbd>.
+It just stores a sequence of ints and allows us to do some computations with
+the sequence.  When we implement a non-trivial class, we want
+to write and test the minimal amount of code to make sure the data was
+put in it correctly, <em>before</em> implementing any other methods.
+That normally means implementing (1) at least one of the constructors and
+(2) an accessor method or print method that would allow us to see that it
+got created correctly.
+<p>
+<hr>
+<strong>Question 1.1</strong> Why can doing this save us time in the
+long run, over implementing the whole class at once?
+<hr>
+<p>
+For the <kbd>Nums</kbd> class we're going to implement the constructor
+and the <kbd>printVals</kbd> method initially.  Since the constructor
+just creates an empty <kbd>Nums</kbd> object, the results of this won't be too
+interesting.  Read on through Step 3 before you start this task.
+<p>
+Read the code and comments in the following files.  First, here's a summary
+of what they contain, and some changes you will be making to them:
+
+<ul>
+
+<li> <a href="Nums.java"><kbd>Nums.java</kbd></a> contains the
+specification for the complete <kbd>Nums</kbd> class (i.e., method
+comments plus method headers).  All the methods are currently empty,
+except for minimal code so the class can be compiled as is.  These are
+called "stub" versions of the methods.  Some of the stubs have
+non-empty bodies because they have a non-void return type, so require
+a return statement to compile.  Those return statements don't necessarily return
+the correct value for the completed version of the methods: i.e., you
+will probably have to change them in the course of doing this lab.
+<p>
+
+<li> <a href="NumsTester.java"><kbd>NumsTester.java</kbd></a> contains
+most of the code for a class that tests the <kbd>Nums</kbd> class.  In
+particular, you are going to add code to test the <kbd>add</kbd>
+method as part of exercise 1, but the code to test the rest of the
+methods is already present.  </ul>
+
+<strong>Step 2.</strong> Go ahead and compile and run
+<kbd>NumsTester</kbd> so you can see what the output looks like with
+the stubs version of the <kbd>Nums</kbd> class.
+<p>
+<strong>Step 3.</strong> Implement the <kbd>Nums</kbd> constructor and
+<kbd>printVals</kbd> method.  This, of course, also involves creating
+the instance variable(s) that are private to the class.  You can run
+<kbd>NumsTester</kbd> with this code, to make sure an empty
+<kbd>Nums</kbd> object gets created and printed correctly.  Look at
+the first few lines of <kbd>main</kbd>; that's where this code gets
+tested.
+<p>
+<strong>Step 4.</strong> 
+
+Implement the code necessary to to test building and printing a
+non-empty <kbd>Nums</kbd> object.  To do that, you need to implement
+the <kbd>Nums</kbd> <kbd>add</kbd> method plus the code to test it
+(more about that in the next few paragraphs).
+<p>
+To <em>test</em> the <kbd>add</kbd> method complete the implementation
+of the static method, <kbd>readNums</kbd> in <kbd>NumsTester</kbd>,
+whose header and comments are already in the class.  We're normally
+going to test our program with input from a <em>file</em> (more about that
+below), so <kbd>readNums</kbd> should not print out any prompts for the
+user.  We wrote a similar program, <a href="../../lectures/code/01-26/ScoreCounts.java"><kbd>ScoreCounts.java</kbd></a>
+in a recent lecture.  We'll review what's involved here:
+
+<p>
+
+<ul>
+<li>In your code you can test if you've reached the end-of-file (eof)
+by using the <kbd>Scanner</kbd> method <kbd>hasNextInt</kbd> which
+returns a <kbd>boolean</kbd>. (Hint: you can find some documentation
+for selected Java classes in Appendix D of the text.)  When running
+the program with input from the keyboard (i.e., not from a file), you
+can generate an end-of-file by typing newline then <kbd>Ctrl-d</kbd>
+after you have entered all the desired input.
+<p>
+
+<li>To test your code with data from a file (rather than from keyboard
+input), you can use Unix input redirection so that
+<kbd>System.in</kbd> is linked to a file instead of the keyboard.
+Look at the contents of the file <a
+href="nums.in"><kbd>nums.in</kbd></a>.  Run your program on it using
+the following command.
+
+<pre>
+java NumsTester < nums.in 
+</pre> 
+
+Note: running the program this way it will no longer wait for
+input from the keyboard.
+</ul>
+<p>
+
+This is the first time you'll be able to test that a non-empty
+<kbd>Nums</kbd> object gets created and printed correctly.  Once
+you've completed the implementation your program should print out the
+list of numbers entered, in the exact format described in the
+<kbd>printVals</kbd> comments (that includes no space after the last
+number printed).  Note: <kbd>NumsTester</kbd> will still not get
+correct results for the tests of the other two <kbd>Nums</kbd>
+methods: <kbd>minVal</kbd> and <kbd>valuesGT</kbd>, since we haven't
+implemented those methods yet.
+<p>
+<strong>Step 5.</strong> Create at least two other test files to test
+boundary cases of the code you have written.  Call them
+<kbd>test1.in</kbd> and <kbd>test2.in</kbd>.  (And, of course, fix
+your program as necessary if it doesn't work properly on the boundary
+cases.)
+
+<p>
+To get checked-off, show the TA the answer to question 1.1, your
+working <kbd>NumsTester</kbd> subset program, running on regular and
+boundary cases; also show him the source code you wrote for this
+exercise, and your test cases.
+<p>
+
+<H3>Exercise 2 (1 checkoff point)</H3>
+
+Save your results from exercise 1 by doing the following command:
+
+<pre>
+cp Nums.java Nums1.java
+</pre>
+
+This is useful if you mess up and want to revert back to a subset you
+know works.  Keep working with the file called <kbd>Nums.java</kbd>
+for this exercise (<kbd>Nums1.java</kbd> is the backup).
+<p>
+Read the comments for the <kbd>minVal</kbd> method of the
+<kbd>Nums</kbd> class so you know what it's supposed to do.
+<p>
+<hr>
+<strong>Question 2.1</strong> Write down the expected results of
+calling <kbd>minVal</kbd> on each of the <kbd>Nums</kbd> objects that
+would result from the input in: <kbd>nums.in</kbd>,
+<kbd>test1.in</kbd>, and <kbd>test2.in</kbd>.
+<hr>
+<p>
+Complete the <kbd>minVal</kbd> method of the <kbd>Nums</kbd> class.
+Once you test your code, answer the question below.
+<p>
+<hr>
+<strong>Question 2.2</strong> From just looking at the results of a
+call to <kbd>minVal</kbd>, we can't always tell whether the
+<kbd>Nums</kbd> object we called it on was empty or non-empty.  Write
+down two examples of non-empty <kbd>Nums</kbd> objects such that this
+is the case.
+
+<hr>
+
+To get checked-off, show the TA your working <kbd>minVal</kbd> code,
+including the source code; show it running on your various test cases
+from exercise 1, plus additional ones if necessary; and show him the
+answers to your questions.
+<p>
+
+
+<H3>Exercise 3 (1 checkoff point)</H3> 
+
+Backup what you have so far from <kbd>Nums.java</kbd> into
+<kbd>Nums2.java</kbd>.  Continue working with <kbd>Nums.java</kbd> for
+this part of the lab.
+<p>
+Read the comments for <kbd>valuesGT</kbd> method of the
+<kbd>Nums</kbd> class so you know what it's supposed to do. Note:
+<kbd>valuesGT</kbd> is short for "values greater than".
+<p>
+Then look at the hard-coded test cases for <kbd>valuesGT</kbd> in
+<kbd>NumsTester</kbd>.  The method is called from the
+<kbd>testFilter</kbd> method in <kbd>NumsTester</kbd>.
+(<kbd>testFilter</kbd> just packages up the computation and output for
+a particular test of <kbd>valuesGT</kbd>, so we don't have to keep
+repeating that code to do multiple tests.)  These test cases are
+designed to go with the data in <kbd>nums.in</kbd>.
+<p>
+<p>
+<hr>
+<strong>Question 3.1</strong> Write down the expected results of the
+hard-coded tests of <kbd>valuesGT</kbd> from <kbd>NumsTester</kbd>
+when run on: <kbd>nums.in</kbd>, <kbd>test1.in</kbd>, and
+<kbd>test2.in</kbd>.
+<hr>
+<p>
+Implement the <kbd>valuesGT</kbd> method of the <kbd>Nums</kbd> class.
+Check that your actual results match the expected results when you run
+it on each of the given test files.  Remember, sometimes a mismatch is
+because of a mistake in the expected results.
+<p>
+
+
+To get checked-off, show the TA your working <kbd>valuesGT</kbd> code,
+including the source code; show it running on your various test cases
+from exercise 1, plus additional ones if necessary; and show him the
+answer to the question.
+
+<blockquote>
+<a name="static"></a>
+<hr>
+<strong>What are <kbd>static</kbd> methods?</kbd></strong> You've been
+introduced to static methods in context of calling them in the Java
+library, such as in the <kbd>Math</kbd> class (described in Special Topic
+4.3 of the textbook),
+and we've been using <kbd>static</kbd> in our
+<kbd>main</kbd> headers even though we didn't really know why. In this
+lab we have a few more static method definitions, namely
+<kbd>readNums</kbd> and <kbd>testFilter</kbd> in <kbd>NumsTester</kbd>,
+so this is a good opportunity to look at this in more detail.
+<p>
+A better name for a static method would be a class method; it's is
+inside the scope of a particular class, but it is not associated with
+an individual instance of the class (i.e., object).  As we've seen,
+from outside the enclosing class they are called with the class name
+instead of an object name (e.g., <kbd>Math.round(...)</kbd>).  When we
+call a static (or non-static) method from another method in the same
+class, you don't have to use the dot notation (e.g., call to
+<kbd>testFilter(...)</kbd> from <kbd>main</kbd>).
+<p>
+The methods in <kbd>NumsTester</kbd> are also static because they are
+helper methods for a static method (namely, <kbd>main</kbd>).  In
+Java, <kbd>main</kbd> is always static because it is called (by the
+run-time system) with no associated instance of its enclosing class
+(i.e., no <kbd>NumsTester</kbd> object, in this case).  In virtually
+all the Java programs we've seen and will write all the variables used
+by <kbd>main</kbd> will be local variables (or the <kbd>args</kbd>
+parameter, which we'll get to later).  Generally static methods can't
+access <em>instance</em> variables of their class, because there is no
+instance involved, and thus classes with <em>only</em> static methods, such as
+<kbd>NumsTester</kbd>, don't have instance variables at all.  The two
+other methods in <kbd>NumsTester</kbd> are helper functions for
+<kbd>main</kbd> to reduce its complexity and the amount of code we
+have to write overall.  Any data they use are passed via explicit
+parameters.
+
+<hr>
+</blockquote>
+<p>
+
+<H3>Exercise 4 (1 checkoff point)</H3>
+
+In this exercise you are just going to answer some more questions
+about the code you wrote.
+<p>
+You added coded that used <kbd>hasNextInt()</kbd> as part of the
+<kbd>readNums</kbd> method you implemented as part of Exercise 1.
+<kbd>hasNextInt</kbd> will return false on more than just end-of-file.
+
+<hr>
+<strong>Question 4.1</strong> Give two examples of other possible
+things we could type in to signal to the program that there are no
+more values to read (i.e., besides <kbd>Ctrl-d</kbd>).  Try each of
+these on your program.  <hr>
+
+<p>
+
+Look at the second line of code in the <kbd>testFilter</kbd> method in
+<kbd>NumsTester</kbd>:
+<pre>
+       nums.valuesGT(threshold).printVals();
+</pre>
+
+<hr>
+<strong>Question 4.2</strong> Write down an equivalent statement with
+more parentheses to show the grouping (i.e., associativity) of the "."
+operators.  Hint: if you think about it, only one grouping makes
+sense.  
+<hr>
+
+<strong>Question 4.3</strong>
+What is the <em>type</em>
+of the innermost sub-expression you put parentheses around (i.e., the
+one that gets evaluated first)?
+<hr>
+
+<strong>Question 4.4</strong>
+Write a sequence of statements equivalent to the whole statement in question, but that uses a local variable to store intermediate results.
+<hr>
+<p>
+
+Our <kbd>Nums</kbd> class uses an array list.  We could have used an
+array instead.  (Note: Sections 7.7.4 and 7.7.8 of the text may be helpful in
+answering the the following two questions related to this.)
+
+<hr>
+<strong>Question 4.5</strong>
+What's the disadvantage of using an ArrayList compared to an array in
+the <kbd>Nums</kbd> class?
+<hr>
+<strong>Question 4.6</strong>
+What's the advantage of using an ArrayList compared to an array in
+the <kbd>Nums</kbd> class?
+<hr>
+<p>
+<hr>
+<strong>Question 4.7</strong> Many programs involve arrays or array
+lists, but we don't <em>always</em> need to store all the values when we are
+processing a sequence of numbers.  For each of the following tasks
+related to this lab say whether an array (or equivalently an array
+list) is necessary to complete the task, and briefly describe why or
+why not.  We're interested in this because we could use
+a lot less memory if we don't have to save all the numbers.
+
+<p>
+To put it another way, do we need to save all the numbers to do the
+task? (why or why not) 
+<ol>
+<li>  Reading in a sequence of numbers and printing them all out.
+
+<li> Reading in a sequence of numbers and printing out the minimum
+value in the sequence.
+
+<li> Reading in a sequence of numbers, printing them out, and printing
+out the minimum value in the sequence.
+
+<li> Reading in a threshold value, a sequence of numbers, and printing
+out the numbers from the sequence that are above the threshold value.
+
+<li> Reading in a sequence of numbers, and generating the
+exact output produced by <kbd>NumsTester.java</kbd> about that data.
+
+</ol>
+
+<hr>
+<p>
+
+<H3>Checkoff for DEN students</H3>
+<p>
+
+One of the files you got for the lab was a <kbd>Makefile</kbd>.  This
+has the submit command to use for this lab.  For <kbd>Nums.java</kbd>
+it just submits the final, completed version, not the backed up
+versions from the early exercises.  If there are any parts of the lab
+you didn't get to (e.g., <kbd>Nums.java</kbd> only has the code for
+exercise 1), you may want to put a note about that in your README.  As
+usual, the README will also contain the answers to any lab questions.
+<p>
+Make sure you put your name and loginid in all the files you submit.
+<p>
+To submit, use the command 
+
+<pre> gmake submit </pre> 
+
+which will submit
+the files <kbd>Nums.java</kbd>, <kbd>NumsTester.java</kbd>,
+<kbd>test1.in</kbd>, <kbd>test2.in</kbd>, and <kbd>README</kbd>.
+<p>
+
+<hr>
+</html>
