@@ -1,0 +1,38 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/weichuanli/Desktop/EC/ecListFuncs.cpp
+iostream
+-
+cassert
+-
+ecListFuncs.h
+/Users/weichuanli/Desktop/EC/ecListFuncs.h
+
+/Users/weichuanli/Desktop/EC/ecListFuncs.h
+iostream
+-
+cctype
+-
+string
+-
+
+/Users/weichuanli/Desktop/EC/ectest.cpp
+iostream
+-
+cctype
+-
+cassert
+-
+string
+-
+sstream
+-
+ecListFuncs.h
+/Users/weichuanli/Desktop/EC/ecListFuncs.h
+
