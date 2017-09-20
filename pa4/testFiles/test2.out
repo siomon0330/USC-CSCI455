@@ -1,0 +1,73 @@
+Type . to quit.
+Rack? We can make 0 words from "x"
+Rack? We can make 0 words from "a"
+Rack? We can make 1 words from "aa"
+All of the words with their scores (sorted by score):
+2: aa
+Rack? We can make 36 words from "efilr"
+All of the words with their scores (sorted by score):
+8: filer
+8: flier
+8: lifer
+8: rifle
+7: fier
+7: file
+7: fire
+7: flir
+7: lief
+7: life
+7: reif
+7: rife
+6: elf
+6: erf
+6: fer
+6: fie
+6: fil
+6: fir
+6: ref
+6: rif
+5: ef
+5: fe
+5: if
+4: leir
+4: lier
+4: lire
+4: riel
+4: rile
+3: ire
+3: lei
+3: lie
+3: rei
+2: el
+2: er
+2: li
+2: re
+Rack? We can make 26 words from "aaabdee"
+All of the words with their scores (sorted by score):
+8: baaed
+7: abed
+7: bade
+7: bead
+7: bede
+7: debe
+6: bad
+6: bed
+6: dab
+6: deb
+5: aba
+5: baa
+5: bee
+4: ab
+4: ba
+4: be
+4: dae
+4: dee
+3: ad
+3: da
+3: de
+3: ed
+2: aa
+2: ae
+2: ea
+2: ee
+Rack? 

@@ -1,0 +1,163 @@
+ // Name:
+// Loginid:
+// CSCI 455 PA5
+// Spring 2017
+
+// Table.cpp  Table class implementation
+
+
+/*
+ * Modified 11/22/11 by CMB
+ *   changed name of constructor formal parameter to match .h file
+ */
+
+#include "Table.h"
+
+#include <iostream>
+#include <string>
+#include <cassert>
+
+
+// listFuncs.h has the definition of Node and its methods.  -- when
+// you complete it it will also have the function prototypes for your
+// list functions.  With this #include, you can use Node type (and
+// Node*, and ListType), and call those list functions from inside
+// your Table methods, below.
+
+#include "listFuncs.h"
+
+
+//*************************************************************************
+
+
+Table::Table() {
+    hashTable = new ListType[HASH_SIZE];
+    hashSize = HASH_SIZE;
+    for(int i = 0; i < hashSize; i++){
+        hashTable[i] = NULL;
+    }
+}
+
+
+Table::Table(unsigned int hSize) {
+    hashTable = new ListType[hSize];
+    hashSize = hSize;
+    for(int i = 0; i < hashSize; i++){
+        hashTable[i] = NULL;
+    }
+
+}
+
+
+int * Table::lookup(const string &key) {
+    
+    Node * & bucket = hashTable[hashCode(key)];
+    return lookUp(bucket, key);
+}
+
+bool Table::remove(const string &key) {
+   
+    Node * & bucket = hashTable[hashCode(key)];
+    return listRemove(bucket, key);
+}
+
+bool Table::insert(const string &key, int value) {
+    
+    Node * & bucket = hashTable[hashCode(key)];
+    return insertFront(bucket, key, value);
+}
+
+int Table::numEntries() const {
+    int sum = 0;
+    for(int i = 0 ; i < hashSize; i++){
+        sum += numberOfList(hashTable[i]);
+    }
+    return sum;
+  
+}
+
+
+void Table::printAll() const {
+    for(int i = 0; i < hashSize; i++){
+        print(hashTable[i]);
+    }
+
+}
+
+void Table::hashStats(ostream &out) const {
+    cout << "number of buckets: " << hashSize << endl;
+    cout << "number of entries: " << numEntries() << endl;
+    cout << "number of non-empty buckets: " << numberOfNonEmptyBuckets() << endl;
+    cout << "longest chain: " << longestNumber() << endl;
+    
+  
+}
+
+
+// add definitions for your private methods here
+
+
+
+
+int Table::numberOfNonEmptyBuckets() const{
+    int number = 0;
+    for(int i = 0 ; i < hashSize; i++){
+        if(hashTable[i] != NULL){
+            number++;
+        }
+    }
+    return number;
+
+}
+
+int Table::longestNumber() const{
+    int longest = 0;
+    for(int i = 0 ; i < hashSize; i++){
+        if(numberOfList(hashTable[i]) > longest){
+            longest = numberOfList(hashTable[i]);
+        }
+    }
+    return longest;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

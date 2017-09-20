@@ -1,0 +1,48 @@
+Type . to quit.
+Rack? We can make 4 words from "abc"
+All of the words with their scores (sorted by score):
+7: bac
+7: cab
+4: ab
+4: ba
+Rack? We can make 3 words from "foo"
+All of the words with their scores (sorted by score):
+6: oof
+5: of
+2: oo
+Rack? We can make 17 words from "aaabbbcc"
+All of the words with their scores (sorted by score):
+11: bacca
+9: abaca
+8: abac
+8: abba
+8: acca
+8: baba
+8: caba
+8: caca
+7: abb
+7: bac
+7: cab
+5: aba
+5: baa
+5: caa
+4: ab
+4: ba
+2: aa
+Rack? We can make 13 words from "deft"
+All of the words with their scores (sorted by score):
+8: deft
+7: def
+7: fed
+6: eft
+6: fet
+6: tef
+5: ef
+5: fe
+4: ted
+3: de
+3: ed
+2: et
+2: te
+Rack? We can make 0 words from "fff"
+Rack? 
