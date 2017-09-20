@@ -1,0 +1,832 @@
+<!DOCTYPE html PUBLIC "-//w3c//dtd html 4.0 transitional//en"><html><head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="GENERATOR" content="Mozilla/4.5 [en]C-CCK-MCD   (WinNT; I) [Netscape]">
+
+<title>CSCI 455: Assignment 2</title></head>
+
+
+<body bgcolor="#ffffff">
+
+<center>
+<h2>
+CS 455 Programming Assignment 2</h2></center>
+
+<div align="right">Spring 2017 [Bono]
+<br>
+<strong>Due:</strong> Wed, Feb. 22, 11:59pm
+</div>
+
+<hr>
+
+<a name="intro"><h3>Introduction</h3></a>
+
+In this assignment you will get practice using the Java
+<kbd>ArrayList</kbd> class, and more practice implementing your own
+classes.  Like you did in assignment 1 and lab 4, you will be
+implementing a class whose specification we have given you, in this
+case a polynomial class called <kbd>Polynomial</kbd>; you will also be
+writing a command-based program to work with <kbd>Polynomial</kbd> objects.
+Writing the
+command-based program will give you more experience processing input
+line-by-line and error-checking user input.
+<p>
+Note: this program is due after your midterm exam, but it's a fair
+amount bigger than the first assignment.  We recommend getting started
+on it before the midterm.  It only uses topics from before the
+midterm, so working on it now will also help you prepare for the exam
+(there will be paper and pencil programming problems as part of the
+exam).  One possible milestone would be to complete <kbd>Polynomial</kbd> and
+<kbd>PolynomialTester</kbd> by the midterm.
+
+<a name="files"><h3>The assignment files</h3> 
+</a>
+
+<strong>Getting the assignment files.</strong> 
+Make a pa2 directory and cd into it.
+
+Copy all of the files in the <kbd>pa2</kbd> directory of
+the course account to your <kbd>pa2</kbd> directory.  We can
+accomplish this with Unix wildcards (denoted with a <kbd>*</kbd>).
+
+<pre>cp ~csci455/assgts/pa2/* .</pre>
+
+<p>
+
+The files in <strong><tt>bold</tt></strong></a> below are ones you
+ create and/or modify and submit.  The ones not in bold are ones that
+ you will use, but not modify.  The files are:
+
+<ul>
+
+<li><a href="Polynomial.java"><strong><kbd>Polynomial.java</kbd></strong></a> The
+<a href="#interface">interface</a> for the <kbd>Polynomial</kbd> class; it
+contains stub versions of the functions so it will compile.  You will
+be completing the <a href="#impl">implementation</a> of this class.
+You may not change the interface for this class (with one exception
+  described later), but you may add
+private instance variables and/or private methods to it
+
+<li><a href="Term.java"><kbd>Term.java</kbd></a> Code for a class for
+a single term in a polynomial.  We wrote this class for you.  Don't change it.
+
+<li><strong><kbd>PolynomialTester.java</kbd></strong> A non-interactive test
+program for your <kbd>Polynomial</kbd> class.  You are not required to
+  submit this file.  This is described further in
+a <a href="#test">later section</a>.
+
+<li><strong><kbd>PolynomialCalculator.java</kbd></strong> The command-based
+program that lets you manipulate polynomials.  Its behavior is
+specified <a href="#prog">later</a> in the assignment.  You create
+this file.
+
+<li><a href="turninpa2"><kbd>turninpa2</kbd></a> A shell script with
+the command for turning in the assignment.  See the section on <a
+href="#submit">submitting your program</a> for more details.
+
+<a name="certification">
+<li><a href="README"><strong><kbd>README</kbd></strong></a>
+See
+section on <a href="#submit">Submitting your program</a> for what to
+put in it.  Before you start the assignment please read the following 
+statement which you will be "signing" in the README:
+
+
+<blockquote>
+"I certify that the work submitted for this assignment does not
+violate USC's student conduct code.  In particular, the work is my
+own, not a collaboration, and does not involve code created by other
+people, with the exception of the resources explicitly mentioned in the CS 455
+Course Syllabus.  And I did not share my solution or parts of it with
+other students in the course."
+</blockquote>
+
+</a>
+
+
+</ul>
+
+<a name="run"><h3>Note on running your program</h3>
+
+We will be using <kbd>assert</kbd> statements in this program.  To be
+able to use them, you need to run the program with asserts enabled
+(-ea flag).  (You do not need to compile any special way.)  Here are
+two examples:
+
+<pre>
+java -ea PolynomialTester
+java -ea PolynomialCalculator
+</pre>
+
+You should run with this flag set every time.
+<p>
+Assert statements, described in Special Topic 11.5 of the text, are another
+tool to help us write correct code.  More about how we are using them
+here in the section on <a href="#invar">representation invariants</a>.
+<p>
+NOTE: In Eclipse you use the Run Configurations settings (in the Run
+menu) to change what arguments are used when running a program.
+<p>
+
+
+<a name="assgt"><h3>The assignment</h3>
+</a>
+
+You will be implementing a polynomial class along with an interactive
+command-based program that uses your class.  The program will allow the user to
+create and manipulate several polynomials.  The internal
+representation we will use for a polynomial is an <kbd>ArrayList</kbd>
+object.
+
+Some of the requirements for the program relate to efficiency,
+testing, and style/design, as well as functionality.  They are described
+in detail in the following sections of the document, and then summarized <a
+href="#summary">near the end</a> of the document.
+
+<a name="interface"><h3>Polynomial: interface</h3>
+
+Your polynomial class, <kbd>Polynomial</kbd>, will have floating point
+coefficients, and non-negative integer exponents.  The class
+definition is in <a href="Polynomial.java"><kbd>Polynomial.java</kbd></a>.  There
+is also a helper <kbd>Term</kbd> class defined in <a
+href="Term.java"><kbd>Term.java</kbd></a>.  A Term is used to hold the
+<em>(coefficient,exponent)</em> pair that makes up one term in a polynomial.
+The interface for <kbd>Polynomial</kbd> is described below using example
+calls and results:
+
+<dl>
+
+<dt>
+<kbd><strong>Polynomial p = new Polynomial();</kbd></strong>
+<dd>
+Create the zero polynomial.  That is one all of whose coefficients have
+the value zero.
+<p>
+
+<dt>
+<kbd><strong>Polynomial p = new Polynomial(new Term(3,5));</kbd></strong>
+<dd>
+Create a polynomial with a single term.  For example, the above
+expression creates the polynomial <kbd>3x<sup>5</sup></kbd>.
+<p>
+
+<dt>
+<kbd><strong>Polynomial sum = poly1.add(poly2);</kbd></strong>
+<dd>
+Add two polynomials, resulting in a new one that is the sum of the first two.
+The two original polynomials are unchanged.
+<pre>
+poly1: 3x<sup>3</sup> + 2x + 7
+poly2: x<sup>5</sup> -3x<sup>3</sup> + 5
+sum:   x<sup>5</sup> + 2x + 12
+</pre>
+<p>
+
+<dt>
+<kbd><strong>double result = poly1.eval(x);</kbd></strong>
+<dd>
+Evaluate a polynomial for a specific floating point value of x.
+<pre>
+poly1: 3x<sup>3</sup> + 2x + 7
+x: 2
+result: 35
+</pre>
+<p>
+
+<dt>
+<kbd><strong>System.out.println(poly1.toFormattedString());</kbd></strong>
+
+<dd> Return a String version of the polynomial that's close to the
+usual format we use to denote polynomials.  It's "close to", because
+it's not going to use a superscript to denote exponentiation.  Note:
+<kbd>toFormattedString</kbd> does not print anything itself.
+
+Here are some examples showing the format to use:
+
+
+<pre>
+0.0
+12.7x^2
+3.0x^2 + 2.0x + 7.0
+-3.0x^5 + -2.0x + -7.0
+-x^2 + x + -1.0
+</pre>
+
+Note that to make the coding easier a <kbd>double</kbd> that has no
+decimal part is printed as, for example, "3.0" instead of "3"; that's
+the default format used in Java when converting such a <kbd>double</kbd> to
+a <kbd>String</kbd>.  
+<p>
+For more information on toFormattedString, see the method comments in 
+<a href="Polynomial.java"><kbd>Polynomial.java</kbd></a>.
+<p>
+
+</dl>
+
+Note: No <kbd>Polynomial</kbd> methods do any I/O.
+<p>
+Clearly there is additional functionality one might want to offer in a
+useful Polynomial class, such as multiplication, but we'll keep this one
+small to make it doable within the time constraints.  (You may be
+enhancing this class in a later assignment.)
+<p>
+
+You may have noticed that there is one more Polynomial method,
+<kbd>isValidPolynomial</kbd>, that's <kbd>private</kbd> , i.e., not part of
+the public interface.  We will describe that <a
+ href="#invar">later</a> after we discuss the representation.  
+<p> 
+
+You may not change the interface for this class, with the following
+exception: you may add a public <kbd>Polynomial</kbd> <kbd>toString</kbd>
+method that you may want to use for debugging purposes.  It would
+probably mostly call the <kbd>toString</kbd> method(s) of its
+constituent part(s).  That way you can see if you are building your
+<kbd>Polynomial</kbd> object correctly, even before you implement
+<kbd>toFormattedString</kbd>.
+
+
+<a name="impl"><h3>Polynomial: representation/implementation</h3>
+
+You can think of a polynomial 
+<p>
+C<sub>n</sub> x<sup>n</sup> + C<sub>n-1</sub>x<sup>n-1</sup> + . . .+ C<sub>1</sub> x + C<sub>0</sub>
+<p>
+as a bunch of pairs (C<sub>i</sub>, i), where C<sub>i</sub> is the
+coefficient of the term with power i.  We could easily represent this
+with an array or ArrayList of n+1 values, where v[i] is the coefficient for
+x<sup>i</sup>.  However, for any of the terms where the coefficient is
+zero, we don't normally show that as part of the polynomial, since a
+zero coefficient makes that whole term zero.  In fact, many times we
+have a polynomial with a large degree (highest power of x), but very
+few non-zero terms.  We call a polynomial with many zero terms a
+<em>sparse</em> polynomial.
+<p>
+An efficient representation for a sparse polynomial is one where we
+only store the non-zero terms.  We're going to use such a sparse
+representation using an <kbd>ArrayList</kbd> for it here (a linked
+list would also be suitable, but we haven't covered that yet).  Each
+element in the list will represent the (C<sub>i</sub>, i) pair for a
+<em>non-zero</em> term in the polynomial.  Furthermore, we're going to maintain
+this as an <em>ordered</em> list, ordered from highest power term to
+lowest.  Here are a few examples:
+
+<p>
+polynomial:   x<sup>100</sup> + 3
+<br>
+representation: { (1,100) &nbsp;  (3,0) }
+<p>
+polynomial:   x<sup>2</sup> + 2x + 1
+<br>
+representation: { (1,2) &nbsp; (2,1) &nbsp (1,0) }
+<p>
+
+We can think of the first example above as "1 times x to the 100th plus
+3 times x to the 0", which leads to the two pairs given.  The zero
+polynomial will be represented by a list of no pairs (i.e., an empty
+list).
+<p>
+
+The polynomial will be in a simplified form: besides no zero terms, we
+won't ever have two terms with the same exponent.  If you look at the
+interface for Polynomial, you will see that there are no restrictions on the
+term argument used in creating one (although the <kbd>Term</kbd> class
+itself has a restriction of no negative exponents); this implies that
+the Polynomial code itself is responsible for making sure the internal
+representation is a simplified polynomial.
+For example, after
+executing the following code sequence all of the polynomials <kbd>p1</kbd>
+through <kbd>p4</kbd> and <kbd>p6</kbd> are the zero polynomial (i.e., internally, an empty ArrayList), and <kbd>p5</kbd> has one Term in its ArrayList.
+
+<pre>
+    Polynomial p1 = new Polynomial();
+    Polynomial p2 = new Polynomial(new Term(0, 3));
+    Polynomial p3 = p2.add(new Polynomial(new Term(0, 7)));
+    Polynomial p4 = new Polynomial(new Term(3, 2)).add(new Polynomial(new Term(-3, 2)));
+    Polynomial p5 = new Polynomial(new Term(3, 2)).add(new Polynomial(new Term(-5, 2)));
+    Polynomial p6 = p5.add(new Polynomial(new Term(2, 2)));
+</pre>
+
+For another example of this simplification, look
+at the example input and output for the last call to <kbd>create</kbd>
+shown in the section on <a href="#prog" >PolynomialCalculator</a>.
+
+<p>
+<a name="auxiliary"></a>
+<strong>Auxiliary functions.</strong> As usual with classes, you are
+free to add private auxiliary (a.k.a., helper) methods that help you
+do the work of the methods that are part of the public interface,
+especially in cases where you can use that function more than once in
+the other code.  This will help you avoid writing redundant code, and
+will help you keep your methods shorter and more readable.  See the <a
+href="#summary">summary</a> section near the end of the document for
+more information about restrictions on method length.
+<p>
+
+
+<a name="add"><h4>More on adding two polynomials</h4>
+
+You are required to add two polynomials in an efficient way.  If the
+first polynomial has <em>n</em> non-zero terms, and the second one has
+<em>m</em>, you are required to do compute the sum in O(<em>m</em> +
+<em>n</em> ) steps.  Since each of the two polynomials' terms are in
+order from largest to smallest exponent, we can do this by doing
+what's called a "merge" of the two ordered lists to create one
+longer<sup><a href="#fn1" id="ref1">*</a></sup>
+ordered list.  Note: we will be talking about big-O notation in class
+soon: you can think of O(<em>m</em>+<em>n</em>) as meaning it takes at
+most <em>C<sub>1</sub>*(m+n) + C<sub>2</sub></em> steps, where
+<em>C<sub>1</sub></em> and <em>C<sub>2</sub></em> are constants (i.e.,
+the constants don't vary with the size of the lists).
+<p>
+
+To merge two ordered lists, traverse them both simultaneously (i.e.,
+using one loop; not nested loops).  Compare the current element in
+each of the two lists to figure out what value to put at the end of
+the result-list next to build it in order (decreasing order, in the
+polynomial example).  So, for example, if list1 had the element you
+put in the result list this time, you advance to the next element of list1, but
+you don't advance where you are in list2, since you don't
+necessarily know where it goes in the result list yet.
+<p>
+When you run out of elements in one of the
+lists, just copy all the rest of the elements from the other list into
+the result list.
+<p>
+A merge can be "destructive", which means it reuses elements from the
+original lists, or "non-destructive", which means it creates new
+elements for the result list.  Since <kbd>add</kbd> is not a mutator
+(i.e., the two operands are unchanged by the operation), this is a
+non-destructive version.
+<p>
+
+Note, however, that <kbd>Term</kbd> objects can be shared between the
+operands and the result because the <kbd>Term</kbd> class is immutable
+(see section 8.2.3 of text for more about immutable classes).  Put
+another way, you don't always have to do <kbd>new Term(...)</kbd> when
+you put a Term into the ArrayList inside a Polynomial.  Recall that the
+<kbd>String</kbd> class is also immutable.
+<p>
+
+
+The merge algorithm is illustrated with an example at the beginning of
+section 14.4 of the textbook.  A completed method to merge two <em>arrays</em>
+appears in that section as well.  That section discusses its use in an
+algorithm called merge sort, which we'll discuss later in the semester
+(you do not have to understand merge sort to complete this
+assignment).
+<p>
+
+
+<sup id="fn1">* In our case, the resulting list may actually be shorter, even much shorter, because we don't store sums that cancel (i.e., add to zero)<a href="#ref1" title="Jump back to footnote 1 in the text.">&#8617</a></sup>
+<p>
+<strong>What data can <kbd>add</kbd> access?</strong>
+Another issue that comes up with the <kbd>add</kbd> method is the
+rules for visibility of private data when we are dealing with multiple
+objects of the same class.  The rule is that a method such as
+<kbd>add</kbd> of class <kbd>Polynomial</kbd> may access the private data of
+<strong>any</strong> <kbd>Polynomial</kbd> objects that are in its scope.  E.g.,
+
+
+<pre> 
+public class Polynomial {
+
+   private Foobar myData;   // dummy instance variable
+
+   public Polynomial add(Polynomial b) {  // contains dummy code to illustrate visibility rules
+
+       Polynomial sum = new Polynomial();
+
+       this.myData;   // legal to access pvt data of <em>this</em>, <em>b</em>, and <em>sum</em> here
+       b.myData;
+       sum.myData;  
+
+       Term t = new Term(3,5);
+       t.expon;      // does not compile -- expon is pvt in Term class
+   }
+}
+
+</pre>
+
+
+ 
+<a name="invar"><h3>Representation invariants</h3>
+
+Many of the development techniques we discuss in this class, for
+example incremental development, the use of good variable names, and
+unit-testing, are to help enable us to write correct code (and make it
+easier to enhance that code later).  Another way to ensure correct
+code within a class is to make explicit any restrictions on what values
+are allowed to be in a private instance variable, and any restrictions on
+relationships between values in different instances variables in our object.  Or put another way, making sure we
+know what must be true about our object representation when it is in a valid
+state.  These are called <em>representation invariants</em>.
+<p>
+Representation invariants are things that are
+true about the object as viewed by the implementor.  Since for many
+classes, once a constructor has been called, the other methods can be
+called in any order, we need to ensure that none of the constructors
+or mutators can leave the object in an invalid state.  It will be
+easier to do that if we know what those assumptions are.
+<p>
+Note: The Polynomial class doesn't actually have any mutators, the only
+methods that change a poly object's state are the ones that create
+them, namely, the two constructors and the <kbd>add</kbd> method.
+<p>
+
+There are two assignment requirements for your Polynomial class related to
+this issue (detailed explanations of each of these follow):
+
+<ol>
+
+<li> in a comment next to your private instance variable definitions for Polynomial,
+list the representation invariants for the object.  
+
+<li> write the private <kbd>boolean</kbd> method <kbd>isValidPolynomial()</kbd> and
+call it from other places in your program as described below.
+
+</ol>
+
+<strong>The representation invariant comment for Polynomial</strong>
+
+<br>
+
+Write a list of all the conditions that the internals of a Polynomial object
+must satisfy.  That is, conditions that are always true about the data
+in a valid Polynomial object.  You can find this information in the <a
+ href="#impl">previous section</a>.  For example, one invariant is
+that for a non-zero poly all the terms must be in decreasing order by exponent.
+<p>
+<a name="valid"></a> <strong><kbd>isValidPolynomial()</kbd>
+method</strong>
+
+<br> 
+
+This private method will test the representation invariant for the
+internals of a poly.  It will return true iff it is valid, i.e., the
+invariants are satisfied.
+<p>
+Call this function at the end of every Polynomial method,
+including the constructors, to make
+sure the method leaves the poly
+in the correct state.  This is one kind of sanity check: one part of a
+program double-checking that another part is doing the right thing (similar
+to printing expected results and actual results).
+<p>
+
+Rather than putting this test in an if statement, we're going to put
+it in an <kbd>assert</kbd> statement.  For example:
+
+<pre>
+assert isValidPolynomial();      // calls isValidPolynomial on implicit parameter
+</pre>
+
+  Assert statements are described
+in Special topic 11.5 of the text.
+<p>
+
+
+In addition, for the <kbd>add</kbd> method, call it on all of the poly
+objects it deals with. Of course the one it creates, but also its two
+operands, e.g.:
+
+<pre>
+public Polynomial add(Polynomial b) {
+
+   . . .
+
+   assert isValidPolynomial();   // call it on "this"-- the left operand of the add
+   assert b.isValidPolynomial();  // call it on the right operand of the add
+   assert result.isValidPolynomial();    // call it on the poly created in add
+   return result;
+}
+</pre>
+The <kbd>add</kbd> operands are supposed to be unmodified by add: the
+checks above help make sure you didn't' modify them by mistake.
+<p>
+
+
+<p>
+Please make sure you are running your program with assertions enabled
+for every run of this program, since it's in a development stage.  See
+earlier <a href="#run">section</a> for how to do this.
+
+You won't really know if they are getting checked unless you
+force one to fail.
+<p>
+The point of these assert statements is to notify you in no uncertain
+terms (so to speak :-)) of possible bugs in your code.  The program
+crashing will force you to fix those bugs.  For example, if a Polynomial
+is not in decreasing order by exponent, then other methods, such as
+<kbd>toFormattedString</kbd> will not work as advertised.
+
+<a name="test"><h3>PolynomialTester program</h3>
+
+<p>
+
+You are required to write a <kbd>PolynomialTester</kbd> program, similar to
+ the other "Tester" programs we have written for other classes, that
+ uses hard-coded values to put the methods through their paces on
+ well-chosen test cases, and prints expected as well as actual
+ results.  You are not required to submit the PolynomialTester program.  <p>
+ The main advantage to writing such a program is that it will allow
+ you to thoroughly test and debug the more difficult aspects of your
+ Polynomial class (in particular, the <kbd>add</kbd> method) without without
+ worrying about the details of doing I/O necessary for
+ <kbd>PolynomialCalculator</kbd>.  If you try to debug your PolynomialCalculator at the same
+ time as your Polynomial class, it will be much harder to pinpoint which
+ part of the program is causing problems.  <p> Another advantage to
+ writing a PolynomialTester program: if you do not get your PolynomialCalculator
+ working, partial credit will be given to a working Polynomial class.  You
+ won't even know if you have a working Polynomial class unless you have some
+ way to test it.  <p>
+
+<a name="prog"><h3>PolynomialCalculator program</h3>
+
+This section describes the user interface for 
+<kbd>PolynomialCalculator</kbd>, an interactive program that lets you
+build and do computations on several Polynomial objects.
+<p>
+Your program will initially create an array of 10
+polynomials whose initial value is the zero polynomial.  The user will
+be able to manipulate any of these polynomials by giving the commands
+shown by example below.  The arguments to the commands are indices of
+this array.
+<p>
+Follow the example below to see what the interface should look like.
+You should also include an intro message that directs users to a
+<kbd>help</kbd> command option, that when given, should provide a command
+summary.  You should do some rudimentary error handling as well.  The
+example shows some, but not all, of the errors you'll need to handle.
+See the next <a href="#error">section</a> for details of error
+checking.  User input shown in bold below.  The explanatory text in
+italics and parentheses is not part of the actual user interaction.
+<p>
+
+
+
+<pre>
+cmd&gt; <strong>create 0</strong>
+Enter a space-separated sequence of coeff-power pairs terminated by &lt;nl&gt;
+<strong>1 100 3 0</strong>
+cmd&gt; <strong>print 0</strong>
+x^100 + 3.0
+cmd&gt; <strong>create 1</strong>
+Enter a space-separated sequence of coeff-power pairs terminated by &lt;nl&gt;
+<strong>1 2 2 1 1 0</strong>           <em>(can use repeated calls to add)</em>
+cmd&gt; <strong>print 1</strong>
+x^2 + 2.0x + 1.0
+cmd&gt; <strong>add 2 0 1</strong>        <em>(poly 2 = poly 0 + poly 1)</em>
+cmd&gt; <strong>print 2</strong>
+x^100 + x^2 + 2.0x + 4.0
+cmd&gt; <strong>create 3</strong>
+Enter a space-separated sequence of coeff-power pairs terminated by &lt;nl&gt;</em>
+<strong>20 0 3 2</strong>              <em>(ok to enter terms in any order)</em>  
+cmd&gt; <strong>add 2 2 3</strong>        <em>(poly 2 = poly 2 + poly 3)</em>
+cmd&gt; <strong>PriNt 2</strong>          <em>(commands can be upper or lower case)</em>
+x^100 + 4.0x^2 + 2.0x + 24.0
+cmd&gt; <strong>eval 3</strong>
+Enter a floating point value for x: <strong>2</strong>
+32.0
+cmd&gt; <strong>create 4</strong>
+Enter a space-separated sequence of coeff-power pairs terminated by &lt;nl&gt;</em>
+<strong>-1 100 -4 2 -24 0</strong>              <em>(ok to enter terms in any order)</em>
+cmd&gt; <strong>print 4</strong>
+-x^100 + -4.0x^2 + -24.0
+cmd&gt; <strong>add 5 4 2</strong>        <em>(poly 5 = poly 4 + poly 2)</em>
+cmd&gt; <strong>print 5</strong>
+2.0x
+cmd&gt; <strong>eval 10</strong>
+ERROR: illegal index for a poly.  must be between 0 and 9, inclusive
+cmd&gt; <strong>print 9</strong>
+0.0
+cmd&gt; <strong>eval 9</strong>
+Enter a floating point value for x: <strong>17</strong>
+0.0
+cmd&gt; <strong>create 1</strong>
+Enter a space-separated sequence of coeff-power pairs terminated by &lt;nl&gt;
+<strong>-3 10   0 1  52.3 0   5 10   12 0   -2 10</strong>      <em>(ok to enter zero terms; mult terms with same exponent)</em>
+cmd&gt; <strong>print 1</strong>
+64.3 
+cmd&gt; <strong>exit</strong>
+ERROR: Illegal command.  Type 'help' for command options.
+cmd&gt; <strong>quit</strong>
+
+</pre>
+
+
+Your output for a particular input should match what's shown above
+character-by-character (e.g., the messages displayed and the error
+handling should be the same), so we can automate our tests when we
+grade your program.  There are a few places where we haven't specified
+the exact output (the help command, some of the error messages);
+obviously, those won't always be the same for each solution.
+<p>
+
+<strong>Hint on identifying commands.</strong> The <kbd>String</kbd> class has a
+method to do case-insensitive comparisons.
+
+<a name="error"><h3>Error checking required</h3>
+
+Here is a list of errors your poly program must check for:  
+
+<ul>
+<li> invalid command
+
+<li> illegal polynomial index (for the array of polynomials)
+
+<li> for the polynomial data for the <kbd>create</kbd> command:
+
+  <ul>
+    <li>missing the last exponent (i.e., odd number of values).
+  For this you should ignore the last value entered (i.e., the term that
+  had a coefficient given, but no corresponding exponent).
+
+    <li> negative exponent.  For this you should use the absolute value.
+
+  </ul> 
+</ul>
+
+For each one you must print an informative message which also states
+the corrective action being taken, if any.  All error messages must
+start with the string "ERROR:".  For the last two items listed above,
+where you are taking corrective action, you should label your message
+with the string "WARNING:" instead.
+
+<a name="lineinput"><h3>Reading polynomial data for <kbd>create</kbd>
+command</h3>
+
+The polynomial data for the <kbd>create</kbd> command are free-form.
+Here is more about what <em>will</em> be allowed in that line of
+input:
+
+<ul>
+<li> Zero coefficients.  Invoking create with one or more terms term
+ with a zero coefficient is fine.  The Polynomial class itself handles
+ simplifying the polynomial.  There was an example shown of this in
+ the last <kbd>create</kbd> command given in the large example shown
+ <a href="#prog">earlier</a>.
+
+<li> Multiple coefficients that have the same exponent.
+  Again, the polynomial takes care of simplification.
+ The <kbd>create</kbd>
+example just mentioned also shows this.
+
+<li> Multiple spaces (' ') and/or tabs ('\t') are allowed before,
+between or after the numbers given.  Recall that the first newline
+('\n') encountered terminates the list of numbers.
+
+</ul>
+
+</strong>  Completing this last requirement of <kbd>create</kbd> is a
+little tricky since "in.nextInt()", for example, skips leading
+whitespace <em>including newlines</em>, but we are using newline as
+our sentinel, so we have to be able to test for it.
+Section 11.2.5 of the textbook (called Scanning a String) shows one
+way of solving the problem of processing an indeterminate number of
+values all on one line.
+It takes advantage of the fact that the
+<kbd>Scanner</kbd> class can also be used to read from a
+<kbd>String</kbd> instead of the keyboard.  First you use
+<kbd>nextLine()</kbd> to read the whole line into a String.  Then you
+use a <em>second</em> <kbd>Scanner</kbd> object initialized with this
+string to then break up the line into the parts you want, using the
+Scanner methods you are already familiar with.
+<p>
+Hint on how to test out this technique: write a little test program to
+read an indeterminate number of ints from each line.  For each line
+break it up into an indeterminate number of ints, storing them in an
+ArrayList.  Note: This simpler test is not exactly the code you will need for
+this program (for example, reading the create input involves reading a double
+alternated with an int).
+<p>
+
+<a name="struct"><h3>Structure of <kbd>PolynomialCalculator</kbd></h3>
+
+The code for <kbd>PolynomialCalculator</kbd> is much too complicated to put it all
+into one <kbd>main</kbd> method.  We could design and add another
+class, to encapsulate the collection of polynomials, but that still
+would leave all the code to do the I/O.  The structure of such a
+command-based program lends itself more to a procedural programming
+design, which we'll review here.
+<p>
+
+A good design principle (for procedural as well as object-oriented
+programming) is to keep each of your functions small, for easier
+program readability.  In object-oriented programming, the class design
+sometimes naturally results in small methods, but sometimes you still
+need auxiliary private methods as we discussed in a <a
+href="#auxiliary">previous section</a>.  The same principles apply for
+a procedural design.  Since we haven't given you a predefined method
+decomposition for the PolynomialCalculator, you will have to create
+this decomposition yourself (although we'll give you some hints,
+coming up).
+<p>
+
+A procedural design in Java is just implemented as <kbd>static</kbd>
+methods in Java that pass data around via explicit parameters.  Static
+methods are discussed in Section 8.4 of the text, and this use of them
+was also discussed in a <a href="../../labs/lab4/lab4.html#static"
+>sidebar in Lab 4</a>.  We have seen
+several examples of this in other test programs we have written, for
+example <a
+href="../../labs/lab4/NumsTester.java"><kbd>NumsTester.java</kbd></a>
+of lab4 and 
+<kbd>PartialNamesTester.java</kbd>
+we developed in lecture.  We have also seen some utility classes in
+Java that have static methods: <kbd>Math</kbd> and <kbd>Arrays</kbd>.
+
+<p>
+If you have learned about procedural design in previous programming
+classes, you know that global variables are a no-no.  Thus, in
+designing such a "main program" class, we don't create any class-level
+variables, because they become effectively global variables (see also
+<a href="../style.html" target="_blank">Style Guideline</a> #9).  The "main class" does not represent any overall
+object.  Instead you will create variables <em>local</em> to <kbd>main</kbd>
+that will get passed to its helper methods, as necessary.
+
+<p>
+In particular here, for <em>each</em> PolynomialCalculator command you may want a
+function to read the data for it and process it once you identify
+which command it is.  E.g., <kbd>doEval</kbd>, <kbd>doCreate</kbd>,
+etc.  That way it will be easy to see the main control structure of
+<kbd>main</kbd>, because it won't be cluttered with a lot of code for
+reading command arguments, for example.  Some of those "do" functions
+will need to be further decomposed into smaller steps (almost certainly
+doCreate will).
+<p>
+Note: the next section discusses a limit on method length as one of
+our style guidelines for this course.
+<p>
+
+
+<a name="summary"><h3>Summary of requirements</h3>
+
+As on the first assignment, there are several requirements for this
+assignment related to design, testing, and development process strewn
+throughout this document.  We'll summarize those and the functional
+requirements here:
+
+<ul>
+
+<li> implement Polynomial class according its public interface (see <a
+href="#interface">Polynomial: interface</a>)
+
+<li> use the representation for Polynomial described in the
+section <a href="#impl">about that</a>.
+
+<li> the <kbd>Polynomial add</kbd> method can't run in more than O(m+n) time as
+described in the section on <a href="#add">adding two polynomials</a>.
+
+<li> write <a href="#invar">representation invariant</a> comments for
+Polynomial class.
+
+<li> implement and use private Polynomial method <kbd>isValidPolynomial</kbd> as described 
+<a href="#valid">here</a>.
+
+<li> implement PolynomialCalculator with the user interface described in the section
+about the <a href="#prog">PolynomialCalculator program</a>.
+
+<li> your code will also be evaluated on style and documentation.
+We will deduct points for programs that do not follow the published <a
+ href="../style.html" >style guidelines</a> for this course (they are
+also linked from the Assignments page).  (Note: For pa1 we only
+deducted points for problems related to <em>some</em> of the style
+guidelines.)  One guideline we want you to be especially aware of is the limit of 30
+lines of code at most allowable in a method.  This is exclusive of
+whitespace, comment lines, and lines that just have a curly bracket by
+itself (i.e., you should not sacrifice code-readability to make your
+code fit into this limit).
+
+</ul>
+
+
+<a name="submit"><h3>README file / Submitting your program</h3>
+
+You will be submitting <kbd>Polynomial.java</kbd>, <kbd>PolynomialCalculator.java</kbd>, and
+<kbd>README</kbd>.  Make sure your name and loginid appear at the
+start of each file.
+<p>
+Here's a review of what goes in the README:  This is the place to
+document known bugs in your program. That means you should describe
+thoroughly any test cases that fail for the the program you are
+submitting.  You can also use the README to give the grader any other
+special information, such as if there is some special way to compile
+or run your program.  You will also be signing the <a href="#certification" >certification</a> 
+shown near the top of this document.
+<p>
+Like last time, for your convenience we put the exact submit command
+to use in a shell script.  There should be a copy of this script in
+your aludra directory that has all your source code files in it (it
+was one of the original files you copied from our assignment
+directory), and you can run it as follows:
+
+<pre>
+source turninpa2
+</pre>
+
+(It's just a text file, so you can look at
+its <a href="turninpa2">contents</a> to see the submit command it will run.)
+<p>
+<hr>
+</body>
+</html>
