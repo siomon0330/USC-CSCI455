@@ -1,5 +1,5 @@
 /*  Name:Chuanli Wei
- *  USC NetID:6222006323
+ *  
  *  CS 455 Spring 2017
  *
  *  See ecListFuncs.h for specification of each function.
