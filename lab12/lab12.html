@@ -1,0 +1,294 @@
+<html>
+<head>
+<title>
+Lab 12 CS 455
+</title
+</head>
+<body bgcolor="#FFFFFF">
+
+<center>
+
+<h2> CS 455 Lab 12: C++ Debugger / Linked lists</h2>
+</center>
+
+<p align=right>
+Spring 2017 [Bono]<BR>
+</p>
+
+<hr>
+<h3> Goals and Background </h3>
+
+This lab will give you some practice with linked lists, along the way
+introducing you to a symbolic debugger to use with g++-compiled
+programs on Unix.
+<p>
+The linked list aspect of the lab is to give you practice with
+reasoning about and writing linked list code, by dealing with some
+buggy linked list code.  One focus of this lab is not debugging per
+se, but being able to predict a program's behavior from looking at the
+code; this will help you write correct code.
+<p>
+The lab instructions assume you will be using the <kbd>gdb</kbd>
+debugger which can run inside of emacs.  For easy reference while doing the lab, you may want to print out the
+help-sheet called "Debugging in Unix" that's linked in the next
+section.  There is also a
+graphical oriented <kbd>ddd</kbd> debugger described in that debugging
+handout: it's very slow to start up (which may be exacerbated if you
+all do it at the same time during the lab), and has a few other
+glitches; we don't recommend you use it for the purposes of this lab.
+<p>
+<strong>Note:</strong> some of the functions here use PRE/POST style of function
+comments.  You are already familiar with preconditions.  A
+postcondition describes what is true after the function executes (that
+is, if the precondition is met before the call, the postcondition will
+be true after the call).  Sometimes the postcondition needs to refer to the
+updated value of a reference parameter as well as its
+original value.  To distinguish these two, we'll use ' to denote the
+updated one.  E.g., in Exercise 3 below, the append function
+postcondition comment says:
+
+<pre>
+// POST: list' is same as list, but with item appended
+</pre>
+
+<kbd>list </kbd> refers to the value of the list <em>before</em> the call, and
+<kbd> list' </kbd> refers to the value of the list <em>after</em> the call.
+
+
+<a name="reading"></a>
+<h3>Reading and reference material</h3> 
+<ul> 
+
+<li> <a
+href="../../doc/debug.html">Debugging in
+Unix</a>.  This is also linked in the Documentation section of the web
+page.  We'll refer to this here as the debugging handout. 
+
+<li> cplusplus.com tutorial on <a href="http://cplusplus.com/doc/tutorial/pointers/">Pointers</a> and <a href="http://cplusplus.com/doc/tutorial/dynamic/">Dynamic memory</a>,  <a href="http://cplusplus.com/doc/tutorial/structures/">Structures</a>.
+
+
+</ul>
+
+<p>
+
+<H3>Exercise 0</H3>
+
+<p>
+<a name="gdb"><strong><kbd>gdb</kbd> version</strong></a>
+
+<br>
+
+If you didn't check what version of gdb you had in lab last week, you
+can do so now (see <a href="../lab11/lab11.html">lab 11, Exercise 0</a> for
+details).  
+
+
+<H3>Exercise 1 (1 checkoff point)</H3>
+<p>
+Copy the files for the lab to your account by typing:
+
+<pre> cp -r ~csci455/labs/lab12 lab12 </pre>
+
+<p>
+
+Load the source code file <a href="factors.cpp"><KBD>factors.cpp</KBD></a> into emacs.
+<p>
+<KBD>factors.cpp</KBD> is a program for calculating all of the factors
+of a number.  The program does not quite work as is.  Since you've
+seen it before, it will be easy to debug it: the goal here is to use
+<kbd>gdb</kbd>.
+<p>
+Compile and run the <kbd>factors.cpp</kbd> program.  To make this
+easier for you, we've created a Makefile for you with rules for
+compiling all the code for this lab.  To compile factors inside emacs,
+type esc-x compile (like we did for Java programs), then give the
+command
+
+<pre>
+gmake factors
+</pre>
+
+This makes an executable called <kbd>factors</kbd>.
+<p>
+<hr>
+<strong>More about <kbd>gmake</kbd> and <kbd>Makefile<kbd>s</strong>.  
+We will often put our compile commands in a Makefile, especially when we start
+compiling multi-file programs in C++, because the compile steps can
+get complicated.  So, here we run <kbd>gmake</kbd>, instead of
+<kbd>g++</kbd> directly.  <kbd>gmake</kbd> uses the rules in the
+<kbd>Makefile</kbd> to decide what needs to be done.  You can look in the
+<a href="Makefile"><kbd>Makefile</kbd></a> we're using here to see
+what command it runs (look for the line that says <kbd>factors:</kbd>)
+<hr>
+<p>
+Use <kbd>gdb</kbd> to find out where the program crashed.  See the
+<a
+href="../../doc/debug.html">debugging handout
+</a>
+ for how to start up <kbd>gdb</kbd> from inside emacs, and for how to
+use it in this kind of situation.  Note: when running gdb from emacs,
+it will show the current line being executed by a little arrow to the
+left of that line in a separate source code buffer.  Use
+<kbd>gdb</kbd> and program examination to find the cause of the error,
+and fix it.  The mistake causing the run-time error can be corrected by
+changing only <EM>one</EM> line.
+<p>
+Note: when the program crashes it may say "core dumped"; this means a
+large file, called <kbd>core</kbd> containing the contents of memory
+at the time of the crash is now in your directory.  In dire
+circumstances you could examine this file to help you debug, but we
+will not need it here, so delete it.
+<p>
+Recompile your new version and run it.  (Hint: You can abort a program
+by typing <KBD>ctrl-c</KBD>, or if you're running in an emacs shell
+window, <KBD>ctrl-c ctrl-c</KBD>.)  Use <kbd>gdb</kbd> again to help
+find the remaining error: You can abort the program from inside
+<kbd>gdb</kbd> to see where it is executing, then you can look at the
+values of variables.  See the debugging handout for more details.
+<p>
+For check-off show the TA your working working <kbd>factors</kbd>
+program running in <kbd>gdb</kbd> under emacs.  In particular show him how you
+set a breakpoint, run to the breakpoint, and then single step through
+the program for a few iterations, displaying the values of key
+variables.
+
+<H3>Exercise 2 (1 checkoff point)</H3>
+
+Note: the beginning of this and the next exercise involves your
+stepping away from the computer and using pencil and
+paper.  The best approach is probably for you and your partner to each
+draw the diagram independently, and then get together to reconcile the
+results.
+
+<PRE>
+// BUGGY sumList
+// PRE: list is a well-formed list
+// POST: returns sum of elements in list
+int sumList (Node *list)
+{
+  Node *p = list;
+  int sum = 0;
+
+  while (p!=NULL) {
+    sum += p->data;
+    p->next = p;
+  }
+  return sum;
+}
+</PRE>
+<p>
+Draw a box-and-pointer diagram showing the state of <KBD>sumList</KBD> on
+entry with a non-empty list, and after each of several iterations of
+the loop.
+<p>
+The <a href="testlist.cpp"><kbd>testlist.cpp</kbd></a> program is a
+small interactive program to test several linked list routines,
+including <kbd>sumList</kbd>.  You can compile it using the command
+<kbd>gmake testlist</kbd>.  Note: don't be surprised that the "b"uild
+function of <kbd>testlist</kbd> builds the list in reverse order from
+the order the values are entered.
+<p>
+Compile and run the <kbd>testlist</kbd> program to test
+<KBD>sumList</KBD> and verify your appraisal of what it currently
+does.  The command <kbd>gmake testlist</kbd> will work to compile it.
+Use <KBD>gdb</KBD> to verify your box-and-pointer diagram for the
+buggy <KBD>sumList</KBD> function.  HINT: if you <KBD>print</KBD> a
+pointer in <KBD>gdb</KBD> you get its value, which is an address (in
+hex).  To see what a pointer, <KBD>p</KBD>, points to, you can
+<KBD>print *p</KBD>.  If two pointers point to the same object, you
+will know this because they will have the same address.
+<p>
+For checkoff show the t.a. your diagram, describe what happened in
+<KBD>gdb</KBD>, and show him what the fix was.
+<p>
+<H3>Exercise 3 (1 checkoff point)</H3>
+<p>
+<PRE>
+// BUGGY append routine
+// PRE: list is a well-formed list
+// POST: list' is same as list, but with item appended
+void append (Node * &list, int item)
+{
+  Node *p = list;
+
+  if (p == NULL) {
+    insertFront(list, item);
+    return;
+  }
+
+  while (p->next != NULL) {
+    p = p->next;
+  }
+
+  p = new Node(item);
+
+}
+</PRE>
+<p>
+On paper create a box-and-pointer diagram for <KBD>append</KBD> of an empty list,
+and append of a non-empty list.
+<p>
+Compile and run the program to test <KBD>append</KBD> and verify your
+appraisal of what it currently does.  Use <KBD>gdb</KBD> if necessary to get
+further information.
+<p>
+Fix the problem, and create a box-and-pointer diagram for the
+corrected version showing the values of the variables at the end of
+the function.
+<p>
+For checkoff, show the TA your two diagrams, and the corrected version
+of the program.
+
+<H3>Exercise 4 (1 checkoff point)</H3>
+<p>
+Complete the implementation of the function <KBD>printEveryOther</KBD>
+(skeleton of body and call already appear in <KBD>testlist.cpp</KBD>).
+<p>
+Your implementation must only do about <EM>n/2</EM> iterations of the
+loop, where <EM>n</EM> is the length of the list.  Your code must work
+for both even- and odd-length lists.  Here's the skeleton:
+<p>
+<PRE>
+// printEveryOther: prints 1st, 3rd, 5th, ... elements in a list
+// PRE: list is a well-formed linked list
+void printEveryOther(Node * list)
+{
+  while (list != NULL) {
+    cout << list->data << " ";
+
+    // YOU COMPLETE THE BODY OF THE LOOP
+  }
+  cout << endl;
+}
+</PRE>
+
+<hr>
+<H3>Checkoff for DEN students</H3>
+
+In the README describe the behavior of each of the buggy functions
+(i.e., before you fixed them).  Submit your <kbd>factors.cpp</kbd> and
+<kbd>testlist.cpp</kbd> with all the work for the lab completed.
+<p>
+To submit, use the command 
+<pre>
+gmake submit
+</pre>
+
+which will submit the files <kbd>testlist.cpp</kbd>,
+<kbd>factors.cpp</kbd> and <kbd>README</kbd>.  Make sure you put your
+name and loginid in all the files you submit.
+<p>
+If you are having problems completing
+this lab, please call or email the TA or instructor for additional
+help.
+<hr>
+
+
+<EM>This lab is adapted from one written by Mike Clancy.</EM>
+<hr>
+
+</html>
+
+
+
+
